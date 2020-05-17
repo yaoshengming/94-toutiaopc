@@ -1,7 +1,7 @@
 <template>
 <!-- 先在最外层放置一个大容器 因为 小容器只能放到大容器里面 -->
    <el-container>
-     <el-aside>
+     <el-aside   >
        <!-- 左侧导航组件  -->
        <layout-aside></layout-aside>
      </el-aside>
@@ -13,8 +13,7 @@
         <layout-header></layout-header>
        </el-header>
        <!-- 主要区域 -->
-       <el-main>
-         <h1>主要区域</h1>
+       <el-main  style="padding: 0" >
           <!-- 这里应该放置 二级路由容器 -->
          <router-view></router-view>
      </el-main>

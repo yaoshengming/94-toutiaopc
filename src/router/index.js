@@ -2,17 +2,25 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/home'
 import Login from '@/views/login'
+import SecondHome from '@/views/home/second_home'
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/home'// 强制跳转到home页
   },
   {
     path: '/home',
     name: 'Home',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: '', // 二级路由的path什么都不写 代表二级路由的默认组件
+        component: SecondHome// 默认的二级路由组件
+      }
+    ]
+    // 在一级路由的路由表下children配置二级路由表
   },
   {
     path: '/login',
