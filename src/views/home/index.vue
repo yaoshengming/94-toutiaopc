@@ -9,7 +9,8 @@
      <el-container>
        <!-- 再上下布局 -->
        <el-header>
-         <h1>顶部操作栏</h1>
+         <!-- 顶部操作栏组件 -->
+        <layout-header></layout-header>
        </el-header>
        <!-- 主要区域 -->
        <el-main>
@@ -23,9 +24,11 @@
 
 <script>
 import LayoutAside from '@/components/home/layout-aside'
+import LayoutHeader from '@/components/home/layout-header'
 export default {
   components: {
-    'layout-aside': LayoutAside
+    'layout-aside': LayoutAside,
+    'layout-header': LayoutHeader
   }
 }
 </script>
