@@ -18,6 +18,9 @@ const routes = [
       {
         path: '', // 二级路由的path什么都不写 代表二级路由的默认组件
         component: SecondHome// 默认的二级路由组件
+      }, {
+        path: 'comment', // 地址
+        component: () => import('@/views/comment')// 组件 按需加载的方式
       }
     ]
     // 在一级路由的路由表下children配置二级路由表
