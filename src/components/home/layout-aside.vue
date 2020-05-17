@@ -50,7 +50,7 @@ export default {}
 <style lang='less' scoped>
 .layout-aside {
   background-color: #2e2f32;
-  width: 230px;
+  width: 300px;
   height: 100vh;
   .title {
     text-align: center;

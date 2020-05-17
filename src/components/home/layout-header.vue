@@ -15,12 +15,12 @@
 <el-col  class="right"  :span="12" >
 <!-- 再次放置一个row组件 -->
 <el-row type="flex" justify="end" align="middle" >
-    <!-- <img :src="userInfo.photo"> -->
-    <img src="http://img1.imgtn.bdimg.com/it/u=3986366078,1066070541&fm=11&gp=0.jpg" alt="" srcset="">
+    <img :src="userInfo.photo">
+    <!-- <img src="http://img1.imgtn.bdimg.com/it/u=3986366078,1066070541&fm=11&gp=0.jpg" alt="" srcset=""> -->
 <!-- 下拉菜单 点击菜单会触发command事件-->
 <el-dropdown  trigger="click" @command="clickMenu">
 <!-- 显示的内容 -->
-<span>是你</span>
+<span>{{userInfo.name}}</span>
 <!-- 下拉内容需要做具名插槽dropdown  -->
 <el-dropdown-menu  slot="dropdown" >
     <!-- 下拉选项el-dropdown-item作为下拉选项组件 -->
@@ -57,7 +57,7 @@ export default {
     }
   },
   created () {
-    const token = localStorage.getItem('user-token')// 从兜里拿钥匙 也就是从缓存中取token
+    const token = localStorage.getItem('urse-token')// 从兜里拿钥匙 也就是从缓存中取token
     // 获取用户个人信息
     this.$axios({
       url: '/user/profile', // 请求地址
@@ -66,8 +66,7 @@ export default {
       }// 请求头参数
     }).then(result => {
       // 如果加载成功我们要将数据赋值给userInfo
-      // this.userInfo = result.data.data
-      debugger
+      this.userInfo = result.data.data
     })
   }
 }
