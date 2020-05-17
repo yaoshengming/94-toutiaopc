@@ -15,8 +15,8 @@
           <el-input  v-model="loginForm.mobile"  placeholder="请输入手机号"></el-input>
         </el-form-item>
         <!-- 验证码 -->
-        <el-form-item prop="cade"  >
-          <el-input v-model="loginForm.cade" style="width:60%" placeholder="请输入验证码"></el-input>
+        <el-form-item prop="code"  >
+          <el-input v-model="loginForm.code" style="width:60%" placeholder="请输入验证码"></el-input>
           <!-- 放置一个按钮 -->
           <el-button style="float:right" plain>发送验证码</el-button>
         </el-form-item>
@@ -40,7 +40,7 @@ export default {
     return {
       loginForm: {
         mobile: '', // 手机号
-        cade: '', // 验证码
+        code: '', // 验证码
         checked: false// 是否同意用户协议
       },
       // 定义表单验证规则
@@ -49,7 +49,7 @@ export default {
           pattern: /^[1]([3-9])[0-9]{9}$/,
           message: '您的手机号格式不正确'// 正则表达式
         }],
-        cade: [{ required: true, message: '您的验证码不能为空' }, {
+        code: [{ required: true, message: '您的验证码不能为空' }, {
           pattern: /^\d{6}$/,
           message: '请输入6位数字的验证码'
         }],
@@ -71,9 +71,23 @@ export default {
     login () {
       //    this.$refs.loginForm 获取的就是el-form的对象实例
       this.$refs.loginForm.validate().then(() => {
-        alert(123)
+        console.log(123)
         // 如果成功通过 校验就会到达 then
-      })// 方法
+        // 通过校验之后 应该做什么事 -> 应该调用登录接口 看看手机号是否正常
+        //   this.$axios.get/post/delete/put
+        this.$axios({
+          url: '/authorizations', // 请求地址
+          data: this.loginForm,
+          // data: { ...this.loginForm, checked: null }, // body请求体参数
+          method: 'post'
+        }).then(result => {
+          // 成功 之后打印结果
+        //  把钥匙放兜里 也就是把token存于本地缓存
+          window.localStorage.setItem('urse-token', result.data.data.token)
+        }).catch(() => {
+
+        })
+      })
     }
   }
 }
