@@ -3,9 +3,20 @@
 // 配置拦截器  以及其他
 import axios from 'axios'
 import router from '@/router'// 路由实例对象
+import JSONBig from 'json-bigint'// 引入第三方处理大数字的包
 // 拦截器及其他组件
 // 配置axios的baseURL  公共的请求头地址
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+// 对axios的返回数据进行自定义处理 用json-bigint代替原来的json
+// transformResponse中要返回处理结果
+axios.defaults.transformResponse = [function (data) {
+  // const result = JSON.parse(data)
+  // return result 用json-bigint的转化来做
+  // const result = JSONBig.parse(data)
+  // // debugger
+  // return result
+  return data ? JSONBig.parse(data) : {}
+}]
 // 请求拦截器的开发
 axios.interceptors.request.use(function (config) {
   // 成功时执行 第一个参数 会有一个config config就是所有的axios的请求信息

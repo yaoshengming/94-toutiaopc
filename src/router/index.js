@@ -21,6 +21,9 @@ const routes = [
       }, {
         path: 'comment', // 地址
         component: () => import('@/views/comment')// 组件 按需加载的方式
+      }, {
+        path: 'material', // 素材管理地址
+        component: () => import('@/views/material')// 组件 按需加载
       }
     ]
     // 在一级路由的路由表下children配置二级路由表

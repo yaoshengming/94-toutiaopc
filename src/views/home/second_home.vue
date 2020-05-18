@@ -25,7 +25,7 @@ export default {
 }
 </script>
 
-<style>
+<style  >
 .second-home{
     height: calc(100vh - 60px);
     background-size: cover;
