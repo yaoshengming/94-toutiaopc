@@ -51,19 +51,19 @@ export default {
         window.location.href = 'https://github.com/yaoshengming/94-toutiaopc'
       } else {
         // 退出系统1.删除token 2.跳转登录页
-        window.localStorage.removeItem('user-token')// 删除localstorage中某个选项
+        window.localStorage.removeItem('urse-token')// 删除localstorage中某个选项
         this.$router.push('/login')// 跳回登录页  编程式导航
       }
     }
   },
   created () {
-    const token = localStorage.getItem('urse-token')// 从兜里拿钥匙 也就是从缓存中取token
+    // const token = localStorage.getItem('urse-token')// 从兜里拿钥匙 也就是从缓存中取token
     // 获取用户个人信息
     this.$axios({
-      url: '/user/profile', // 请求地址
-      headers: {
-        Authorization: `Bearer ${token}`// 格式要求Bearer+token
-      }// 请求头参数
+      url: '/user/profile' // 请求地址
+      // headers: {
+      //   Authorization: `Bearer ${token}`// 格式要求Bearer+token
+      // }// 请求头参数
     }).then(result => {
       // 如果加载成功我们要将数据赋值给userInfo
       this.userInfo = result.data.data
