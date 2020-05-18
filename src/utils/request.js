@@ -2,6 +2,7 @@
 // 对于axios的二次封装
 // 配置拦截器  以及其他
 import axios from 'axios'
+import router from '@/router'// 路由实例对象
 // 拦截器及其他组件
 // 配置axios的baseURL  公共的请求头地址
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
@@ -27,7 +28,20 @@ axios.interceptors.response.use(function (response) {
   // 在拦截器中 需要将数据返回  将数据进行解构
   return response.data ? response.data : {} // 有的接口 没有任何的响应数据
   // 成功的时候执行
-}, function () {
-  // 失败的时候执行
+}, function (error) {
+  // 失败的时候执行 error是错误对象 里面包含错误的状态码 和响应信息
+  // 401状态码 表示用户认证失败 用户身份不对
+  // 401出现的时候 表示拿错token token过期 没拿 名不对 格式不对……
+  // 之前的导航守卫 校验token有没有 检查了钥匙有没有
+  // 方法一粗暴换钥匙：回登录页 重来 回登录页之前 应该把旧钥匙清楚 项目二温柔换钥匙
+  // debugger
+  // console.log(error)
+  if (error.response.status === 401) {
+    localStorage.removeItem('urse-token')// 删除钥匙
+    router.push('./login')// 直接导入路由实例对象 使用跳转方式 相当于组件中this.$router
+    // 跳转登录页 不能用this.$router this不是组件实例
+  }
+  // 进行错误处理
+  return Promise.reject(error)// 所有的axios调用 依然可以在catch中得到错误
 })
 export default axios
