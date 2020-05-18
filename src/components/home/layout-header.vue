@@ -8,7 +8,7 @@
 <el-col  class="left"  :span="12" >
 <!-- 图标 -->
 <i class="el-icon-s-fold" ></i>
-<span>小喵家的小鱼干有限公司</span>
+<span>这里是小喵家</span>
 </el-col>
 <!-- 右侧列 -->
 
