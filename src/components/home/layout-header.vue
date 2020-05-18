@@ -66,7 +66,7 @@ export default {
       // }// 请求头参数
     }).then(result => {
       // 如果加载成功我们要将数据赋值给userInfo
-      this.userInfo = result.data.data
+      this.userInfo = result.data
     })
   }
 }

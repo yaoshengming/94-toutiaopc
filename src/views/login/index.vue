@@ -83,7 +83,7 @@ export default {
         }).then(result => {
           // 成功 之后打印结果
         //  把钥匙放兜里 也就是把token存于本地缓存
-          window.localStorage.setItem('urse-token', result.data.data.token)
+          window.localStorage.setItem('urse-token', result.data.token)
           // 跳转到主页
           this.$router.push('/home')// push和router-link类似to属性 可以直接是字符串 也可以是对象
         }).catch(() => {
