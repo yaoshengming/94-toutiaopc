@@ -100,7 +100,7 @@ export default {
 // 加了scoped属性 就只会对当前自己的组件起作用
 // 如果需要写less 需要在style标签中 lang='less'
 .login {
-  background-image: url("../../assets/img/back.jpg");
+  background-image: url("../../assets/img/1.jpg");
   height: 100vh; // 当前屏幕可视区域分成100份
   background-size: cover;
   display: flex;
