@@ -29,7 +29,7 @@ export default {
 .second-home{
     height: calc(100vh - 60px);
     background-size: cover;
-    background-image: url("http://i0.hdslb.com/bfs/article/8991aff474e7f3b9e308281d02787d17adfdedcb.jpg");
+    background-image: url("http://pic1.win4000.com/wallpaper/8/589a8925a691e.jpg");
 
 }
 </style>

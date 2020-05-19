@@ -24,6 +24,10 @@ const routes = [
       }, {
         path: 'material', // 素材管理地址
         component: () => import('@/views/material')// 组件 按需加载
+      },
+      {
+        path: 'articles', // 内容管理地址
+        component: () => import('@/views/articles')// 组件 按需加载
       }
     ]
     // 在一级路由的路由表下children配置二级路由表
