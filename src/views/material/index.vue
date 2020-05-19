@@ -1,10 +1,21 @@
 <template>
   <el-card>
+    <!-- 素材管理模块 -->
     <!-- 放置面包屑 -->
     <bread-crumb slot="header">
       <!-- 具名插槽 -->
       <template slot="title">素材管理</template>
     </bread-crumb>
+<!-- 上传素材模块 -->
+<!-- 放置布局组件el-row -->
+<el-row type="flex" justify="end" >
+  <!-- 放置上传组件el-upload -->
+  <!-- el-upload 必须有action 否则报错 -->
+<el-upload  action="" :http-request="uploadImg">
+<el-button  size="small"  type="primary" >上传素材</el-button>
+<!-- 传入一个内容 点击内容就会传出上传文件框 -->
+</el-upload>
+</el-row>
     <!-- 放置标签页 v-model所绑定的值 就是当前所激活的页签-->
     <!-- @tab-click  是切换tab页签时 进行事件监听 element-ui-->
     <el-tabs v-model="activeName" @tab-click="changeTab">
@@ -18,8 +29,8 @@
             <img :src="item.url" alt />
             <!-- 操作栏 可以flex布局-->
             <el-row class="operate" type="flex" align="middle" justify="space-around">
-              <i class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
+              <i class="el-icon-star-on" @click="collectOr(item)" :style="{color:item.is_collected ? 'red' : 'black'}"></i>
+              <i class="el-icon-delete-solid" @click="delMaterial(item)"  ></i>
             </el-row>
           </el-card>
         </div>
@@ -60,16 +71,72 @@ export default {
       page: {
         total: 0, // 总条数
         currentPage: 1, // 当前页码
-        pageSize: 4// 每页多少条
+        pageSize: 30// 每页多少条
       }
     }
   },
   methods: {
+    // 收藏素材
+    collectOr (row) {
+      this.$axios({
+        url: `/user/images/${row.id}`,
+        method: 'put', //
+        data: {
+          collect: !row.is_collected
+          // true  or flase 取反 因为收藏=>取消收藏 取消收藏=>收藏
+        }
+      }).then(() => {
+        // 如果成功  我们应该重新获取数据
+        this.getMaterial()
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
+    },
+    // 删除素材
+    delMaterial (row) {
+      // 删除之前询问
+      this.$confirm('您确定要删除该图片吗？', '提示').then(() => {
+        this.$axios({
+          url: `/user/images/${row.id}`,
+          method: 'delete', //
+          data: {
+            collect: !row.is_collected
+          // true  or flase 取反 因为收藏=>取消收藏 取消收藏=>收藏
+          }
+        }).then(() => {
+        // 如果成功  我们应该重新获取数据
+          this.getMaterial()
+        }).catch(() => {
+          this.$message.error('操作失败')
+        })
+      })
+    },
+    // 分页部分
     changPage (newPage) {
       // 传入一个新页
       this.page.currentPage = newPage// 将新页码赋值给页码数据
       this.getMaterial()// 获取数据
     },
+    // 上传素材部分
+    // 定义一个上传组件的方法
+    uploadImg (params) {
+      // params.file就是需要上传的图片文件
+      // 接口参数类型要求是formData
+      const data = new FormData()// 实例化一个formData
+      data.append('image', params.file)// 加入文件参数
+      // 开始发送上传请求
+      this.$axios({
+        url: '/user/images',
+        method: 'post', // 上传或新增一般都是post类型
+        data// es6简写 data:data
+      }).then(() => {
+        // 如果成功  我们应该重新获取数据
+        this.getMaterial()
+      }).catch(() => {
+        this.$message.error('上传素材失败')
+      })
+    },
+    // 素材部分
     // 获取素材数据
     getMaterial () {
       this.$axios({
