@@ -8,6 +8,8 @@
     <el-form style="padding-left:50px">
       <el-form-item label="文章状态">
         <!-- 放置单选框组 -->
+        <!-- // 当选择一个频道及审核状态时 获取的数据应该是叠加数据 用事件监听方式 element-ui中对单选框监听@change -->
+        <!-- <el-radio-group v-model="searchForm.status" 监听data中的数据变化第一种方法（文章状态 频道 日期 数据进行整合）@change="changeCondition"> -->
         <el-radio-group v-model="searchForm.status">
           <!-- 单选框选项label 表示该选项对应的值 -->
           <!-- :label的意思是后面值不会加引号 -->
@@ -21,6 +23,8 @@
       </el-form-item>
       <el-form-item label="频道类型">
         <!-- 选择器 -->
+        <!-- 与文章状态一致  都有change 直接 @change="changeCondition" -->
+        <!-- <el-select placeholder="请选择频道" v-model="searchForm.channel_id" 监听data中的数据变化第一种方法（文章状态 频道 日期 数据进行整合）@change="changeCondition"> -->
         <el-select placeholder="请选择频道" v-model="searchForm.channel_id">
           <!-- 下拉选项 应该通过接口获取数据-->
           <!-- el-option是下来的选项 label是显示值 value是绑定的值 -->
@@ -29,7 +33,15 @@
       </el-form-item>
       <el-form-item label="日期范围">
         <!-- 日期范围选择组件 要设置type属性为daterange-->
-        <el-date-picker type="daterange" v-model="searchForm.dateRange"></el-date-picker>
+        <!-- 先采用插值表达式{{searchForm.dateRange}}查看 发现日期的显示值和存储值的结构不一致 使用elemengt-ui中value-format指定绑定值的格式 -->
+        <!-- 与文章状态一致  都有change  监听data中的数据变化第一种方法（文章状态 频道 日期 数据进行整合）直接@change="changeCondition" -->
+        <!-- <el-date-picker--
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          v-model="searchForm.dateRange"
+          @change="changeCondition"
+        ></el-date-picker-->
+        <el-date-picker type="daterange" value-format="yyyy-MM-dd" v-model="searchForm.dateRange"></el-date-picker>
       </el-form-item>
     </el-form>
     <!-- 内容列表 文章主体结构 -->
@@ -60,11 +72,24 @@
         <span>
           <i class="el-icon-edit"></i> 修改
         </span>
-        <span>
+        <span @click=" del( item.id.toString())">
+          <!-- 删除需要传递删除的参数id id有可能是大数字类型 所以to toString -->
           <i class="el-icon-delete"></i> 删除
         </span>
       </div>
     </div>
+    <!-- 放置分页组件 -->
+    <el-row type="flex" justify="center" style="height:80px" align="middle">
+      <!-- 分页组件 -->
+      <el-pagination
+        :current-page="page.currentPage"
+        :page-size="page.pageSize"
+        :total="page.total"
+        @current-change="changePage"
+        background
+        layout="prev,pager,next"
+      ></el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -72,6 +97,12 @@
 export default {
   data () {
     return {
+      // 分页
+      page: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 接口要求每页10-50条之间
+        total: 0 // 总数
+      },
       //   定义一个表单数据对象
       searchForm: {
         // 数据
@@ -85,6 +116,18 @@ export default {
       list: [], // 专门来接收文章的数据
       // 地址对应的文件变成了变量 在编译的时候被拷贝到编译的位置
       defaultImg: require('../../assets/img/v2-deff985cfcb7690bc71fdf8676438146_hd.jpg')
+    }
+  },
+  // 监听data中的数据变化（文章状态 频道 日期 数据进行整合） 第一种@change="changeCondition"  第二种解决方案  watch监听对象的深度检测方案
+  watch: {
+    searchForm: {
+      deep: true, // 固定写法 表示 会深度检测searchForm中的数据变化
+      // handler也是一个固定写法 一旦数据发生任何变化 就会触发 更新
+      handler () {
+        //  统一调用改变条件的 方法
+        this.page.currentPage = 1 // 分页 只要条件变化 就变成第一页
+        this.changeCondition() // this 指向当前组件实例
+      }
     }
   },
   // 过滤器专门处理显示格式
@@ -107,17 +150,69 @@ export default {
       // 根据当前状态的值 显示不同类型的tag 标签
       switch (value) {
         case 0:
-          return 'warning'// 草稿的时候是警告 element-ui
+          return 'warning' // 草稿的时候是警告 element-ui
         case 1:
-          return 'info'// 待审核
+          return 'info' // 待审核
         case 2:
-          return ''// 已发表
+          return '' // 已发表
         case 3:
-          return 'danger'// 审核失败
+          return 'danger' // 审核失败
       }
     }
   },
   methods: {
+    // 删除素材
+    del (id) {
+      // 删除之前提问
+      this.$confirm('您确定删除此条数据？', '提示').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/articles/${id}`
+        }).then(() => {
+          // 删除成功 成功获取数据
+          // 应该带着条件去获取
+          this.changeCondition()
+        }).catch(() => {
+          this.$message.error('删除文章失败')
+        })
+      })
+    },
+    // 分页 改变页码事件
+    changePage (newPage) {
+      // 现将最新页码给到当前页码
+      this.page.currentPage = newPage // 最新页码
+      // 切换页码也需要带条件去翻页 组装条件
+      this.changeCondition() // 直接调用改变事件的方法
+    },
+    // 当选择一个频道及审核状态时 获取的数据应该是叠加数据 用事件监听方式 element-ui中对单选框监听change
+    changeCondition () {
+      // alert(this.searchForm.status)当触发此方法时 表单数据已经变成最新的了
+      // 组装条件params 即文章状态 频道 日期
+      const params = {
+        page: this.page.currentPage, // 如果变化条件 应该回到第一页
+        per_page: this.page.pageSize,
+        status: this.searchForm.status === 5 ? null : this.searchForm.status, // 当文章状态为5时 显示全部文章 不传数据=null
+        // status文章状态 channel_id频道id，不传为全部   begin_pubdate起始时间 end_pubdate截止时间都是接口文档中的参数
+        channel_id: this.searchForm.channel_id, // 就是表单数据
+        // this.searchForm.dateRange &&判断 至少不为空 解决关闭日期时内容不变化的情况
+        begin_pubdate:
+          this.searchForm.dateRange && this.searchForm.dateRange.length
+            ? this.searchForm.dateRange[0]
+            : null,
+        end_pubdate:
+          this.searchForm.dateRange && this.searchForm.dateRange.length > 1
+            ? this.searchForm.dateRange[1]
+            : null
+      }
+      // 通过接口传入
+      this.$axios({
+        url: '/articles',
+        params
+      }).then(result => {
+        this.list = result.data.results
+      })
+      console.log(params)
+    },
     //   获取频道数据
     getClannels () {
       this.$axios({
@@ -133,12 +228,14 @@ export default {
         url: '/articles'
       }).then(result => {
         this.list = result.data.results
+        // 分页 将总数赋值给total
+        this.page.total = result.data.total_count // 文章总数
       })
     }
   },
   created () {
     this.getClannels()
-    this.getArticles()// 手动调用文章数据
+    this.getArticles() // 手动调用文章数据
   }
 }
 </script>
