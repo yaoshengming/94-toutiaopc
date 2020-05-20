@@ -62,6 +62,7 @@
         :current-Page="page.currentPage"
         :page-size="page.pageSize"
         layout="prev,pager,next"
+        @current-change="changPage"
       >
         <!-- prev 上页 pager页码 next下一页 -->
       </el-pagination>
