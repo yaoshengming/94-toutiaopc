@@ -50,7 +50,7 @@ export default {
         title: '', // 标题
         content: '', // 内容
         cover: {
-          type: '0',
+          type: 0,
           images: []// 字符串数组 对应type 假如type为1 images中应该有一个值 假如为3 images应该有三个值 0 images为空
         }, // 封面 封面类型 -1:自动，0-无图，1-1张，3-3张
         channel_id: null
@@ -65,13 +65,24 @@ export default {
     }
   },
   methods: {
+    // 修改文章跳转到指定文章数据id 根据id获取文章详情数据
+    getArticleId (id) {
+      this.$axios({
+        url: `/articles/${id}`
+      }).then(result => {
+        this.publishForm = result.data// 将数据赋值给表单数据
+      })
+    },
     // 发表手动校验  先ref 再注册事件
     publish (draft) {
+      // 能做四件事1、发布正式文章
+      // 2、发布草稿文章 3、修改正式文章 4、修改草稿文章
       this.$refs.myForm.validate().then(() => {
+        const { articleId } = this.$route.params // 判断是否是修改文章还是新增文章 id不为空就是修改 如果为空就是发布新文章
         //   调用发布接口 进入then 表示成功
         this.$axios({
-          method: 'post',
-          url: '/articles',
+          method: articleId ? 'put' : 'post', // 根据id 决定用什么地址
+          url: articleId ? `/articles/${articleId}` : 'articles', // 根据id决定用什么类型
           params: { draft },
           //   params: { draft: false }, // query参数
           data: this.publishForm// 请求体body参数
@@ -95,6 +106,13 @@ export default {
   created () {
     // 调用频道数据的方法
     this.getCannels()
+    // 修改文章跳转到对应文章数据
+    const { articleId } = this.$route.params// articleId是路由参数中定义的
+    // if (articleId) {
+    //   // 获取文章数据
+    //   this.getArticleId(articleId)
+    // }
+    articleId && this.getArticleId(articleId)// &&运算符 如果前面为true才会执行后面的逻辑
   }
 }
 </script>
