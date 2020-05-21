@@ -69,7 +69,10 @@
       </div>
       <!-- 右侧内容 -->
       <div class="right">
-        <span>
+        <!-- <span @click="toPublish"
+        文章修改 跳转到对应文章的id>
+          动态路由传参  toString防止大数字-->
+          <span @click="$router.push(`/home/publish/${item.id.toString()}`)" >
           <i class="el-icon-edit"></i> 修改
         </span>
         <span @click=" del( item.id.toString())">
@@ -161,6 +164,10 @@ export default {
     }
   },
   methods: {
+    // 修改文章跳转到文章页面
+    toPublish () {
+      // this.$router.push('/home/publish')
+    },
     // 删除素材
     del (id) {
       // 删除之前提问

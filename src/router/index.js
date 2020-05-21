@@ -30,7 +30,7 @@ const routes = [
         component: () => import('@/views/articles')// 组件 按需加载
       },
       {
-        path: 'publish', // 发布文章
+        path: 'publish/:articleId?', // 发布文章publish/:articles动态路由传值加上问号表示 可有可无
         component: () => import('@/views/publish')
       }
     ]

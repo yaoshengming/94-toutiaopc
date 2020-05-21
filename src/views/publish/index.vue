@@ -4,7 +4,7 @@
       <template slot="title">发布文章</template>
     </bread-crumb>
      <!-- 表单组件  标题宽度设置于 el-form组件-->
-      <el-form ref="myForm" :model="publishForm"  :rules="publishRlues" style="margin-left:50px" label-width="100px">
+      <el-form ref='myForm' :model="publishForm"  :rules="publishRlues" style="margin-left:50px" label-width="100px">
         <el-form-item label="标题" prop="title">
           <!-- 输入框 -->
           <el-input  v-model="publishForm.title"  placeholder="请输入您的标题" style="width:60%"></el-input>
@@ -33,8 +33,8 @@
         </el-form-item>
         <el-form-item>
           <!-- 放置两个按钮 -->
-          <el-button type='primary' @click="publish">发表</el-button>
-          <el-button>存入草稿</el-button>
+          <el-button  @click="publish(false)" type='primary'>发表</el-button>
+          <el-button @click="publish(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
   </el-card>
@@ -58,17 +58,30 @@ export default {
       publishRlues: {
         title: [{ required: true, message: '文章标题不能为空', trigger: 'blur' },
           { min: 5, max: 30, message: '标题应该在5-30字符之间', trigger: 'blur' }],
-        content: [{ required: true, message: '文章标题不能为空', trigger: 'blur' },
-          { min: 5, max: 30, message: '标题应该在5-30字符之间', trigger: 'blur' }],
-        channel_id: [{ required: true, message: '文章标题不能为空', trigger: 'blur' },
-          { min: 5, max: 30, message: '标题应该在5-30字符之间', trigger: 'blur' }]
+        content: [{ required: true, message: '文章内容不能为空', trigger: 'blur' }],
+        channel_id: [{ required: true, message: '频道内容不能为空', trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
     // 发表手动校验  先ref 再注册事件
-    publish () {
-      this.$refs.myForm.validate()
+    publish (draft) {
+      this.$refs.myForm.validate().then(() => {
+        //   调用发布接口 进入then 表示成功
+        this.$axios({
+          method: 'post',
+          url: '/articles',
+          params: { draft },
+          //   params: { draft: false }, // query参数
+          data: this.publishForm// 请求体body参数
+        }).then(() => {
+          this.$message.success('发布成功！')
+          this.$router.push('/home/articles')// 发布成功跳转到文章列表
+        }).catch(() => {
+          this.$message.error('发布失败!')
+        })
+      })
     },
     // 获取频道数据
     getCannels () {
