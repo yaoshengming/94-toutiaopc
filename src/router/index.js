@@ -32,6 +32,10 @@ const routes = [
       {
         path: 'publish/:articleId?', // 发布文章publish/:articles动态路由传值加上问号表示 可有可无
         component: () => import('@/views/publish')
+      },
+      {
+        path: 'account', // 账户地址
+        component: () => import('@/views/account')
       }
     ]
     // 在一级路由的路由表下children配置二级路由表
