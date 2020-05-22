@@ -2,10 +2,11 @@
   <div class="layout-aside">
     <!-- 头部图片 -->
     <div class="title">
-      <img src="../../assets/img/logo_admin.png" alt />
+      <!-- // 左侧导航菜单折叠 头部图片也需要改变 -->
+      <img :src="collapse ? smallImg : bigImg" alt />
     </div>
     <!-- 导航菜单 开启路由模式 ：router="true"和router都行-->
-    <el-menu :router="true" background-color="#323745" text-color="#adafb5">
+    <el-menu  :collapse="collapse"   :router="true" background-color="#323745" text-color="#adafb5">
       <!-- 子菜单 没有子菜单的 用 el-menu-item标签 -->
       <el-menu-item index="/home">
         <i class="el-icon-s-home"></i>
@@ -44,13 +45,22 @@
 </template>
 
 <script>
-export default {}
+export default {
+  // 左侧导航菜单折叠
+  props: ['collapse'], // 接收父组件传出来的变量
+  data () {
+    return {
+      bigImg: require('../../assets/img/logo_admin.png'),
+      smallImg: require('../../assets/img/toutiao.png')
+    }
+  }
+}
 </script>
 
 <style lang='less' scoped>
 .layout-aside {
   background-color: #2e2f32;
-  width: 300px;
+  // width: 300px;
   // min-width: 1000vh;
   height: 100vh;
   .title {

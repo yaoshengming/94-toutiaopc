@@ -1,9 +1,10 @@
 <template>
 <!-- 先在最外层放置一个大容器 因为 小容器只能放到大容器里面 -->
    <el-container>
-     <el-aside   style=" background:#2e2f32">
-       <!-- 左侧导航组件  -->
-       <layout-aside></layout-aside>
+     <!-- width左侧导航折叠状态改变 数值发生改变 -->
+     <el-aside :style="{width: collapse ? '64px' : '300px'}"  style="transition:all 0.5s;background:#2e2f32">
+       <!-- 左侧导航组件 直接把父组件的状态传给子组件 左侧导航菜单折叠 -->
+       <layout-aside :collapse="collapse"></layout-aside>
      </el-aside>
      <!-- 右侧 再嵌套一个 el-container -->
      <el-container>
@@ -22,13 +23,20 @@
 </template>
 
 <script>
-// import LayoutAside from '@/components/home/layout-aside'
-// import LayoutHeader from '@/components/home/layout-header'
+// 监听左侧导航菜单折叠
+import eventBus from '@/utils/eventBus'
 export default {
-  // components: {
-  //   'layout-aside': LayoutAside,
-  //   'layout-header': LayoutHeader
-  // }
+  data () {
+    return {
+      collapse: false// 默认是展开状态
+    }
+  },
+  created () {
+    eventBus.$on('changeCollapse', () => {
+      // 此时表示折叠状态一定改变 一定与当前状态相反
+      this.collapse = !this.collapse
+    })
+  }
 }
 </script>
 

@@ -6,8 +6,8 @@
 <el-row align="middle" type="flex"  class="layout-header" >
     <!-- 等分为两列  为什么是：span?  因为element-ui中span是number类型 不加：会认为是字符串就会报错 -->
 <el-col  class="left"  :span="12" >
-<!-- 图标 -->
-<i class="el-icon-s-fold" ></i>
+<!-- 图标 class为动态图标 左侧菜单折叠还是不折叠-->
+<i  @click="collapse=!collapse" :class="{'el-icon-s-fold' : !collapse,'el-icon-s-unfold':collapse}" ></i>
 <span>这里是小喵家</span>
 </el-col>
 <!-- 右侧列 -->
@@ -40,7 +40,15 @@ import eventBus from '@/utils/eventBus'
 export default {
   data () {
     return {
-      userInfo: {}// 用户个人信息
+      userInfo: {}, // 用户个人信息
+      collapse: false// 开始左侧导航菜单不是折叠
+    }
+  },
+  // 监听左侧导航菜单折叠状态
+  watch: {
+    collapse () {
+      // 折叠状态变化 通知左侧导航组件
+      eventBus.$emit('changeCollapse')// 触发一个改变折叠状态的事件
     }
   },
   methods: {
