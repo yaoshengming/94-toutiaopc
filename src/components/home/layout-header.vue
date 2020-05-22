@@ -35,6 +35,8 @@
 </template>
 
 <script>
+// eventBus公共事件监听  头像用户名实时更新
+import eventBus from '@/utils/eventBus'
 export default {
   data () {
     return {
@@ -54,19 +56,29 @@ export default {
         window.localStorage.removeItem('urse-token')// 删除localstorage中某个选项
         this.$router.push('/login')// 跳回登录页  编程式导航
       }
+    },
+    // 封装获取数据的方法
+    getUserInfo () {
+      // 获取用户个人信息
+      this.$axios({
+        url: '/user/profile' // 请求地址
+      // headers: {
+      //   Authorization: `Bearer ${token}`// 格式要求Bearer+token
+      // }// 请求头参数
+      }).then(result => {
+      // 如果加载成功我们要将数据赋值给userInfo
+        this.userInfo = result.data
+      })
     }
   },
   created () {
     // const token = localStorage.getItem('urse-token')// 从兜里拿钥匙 也就是从缓存中取token
     // 获取用户个人信息
-    this.$axios({
-      url: '/user/profile' // 请求地址
-      // headers: {
-      //   Authorization: `Bearer ${token}`// 格式要求Bearer+token
-      // }// 请求头参数
-    }).then(result => {
-      // 如果加载成功我们要将数据赋值给userInfo
-      this.userInfo = result.data
+    this.getUserInfo()// 正常加载
+    eventBus.$on('updateUser', () => {
+      // 如果有人触发了updateUser事件 就会进入到该函数
+      // 有人更改用户信息 应该重新获取信息
+      this.getUserInfo()
     })
   }
 }

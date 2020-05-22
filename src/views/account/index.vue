@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import eventBus from '@/utils/eventBus'
 export default {
   data () {
     return {
@@ -63,7 +64,8 @@ export default {
           method: 'patch',
           data: this.formData
         }).then(() => {
-          this.$message.success('保存用户信息成功')
+          this.$message.success('保存用户信息成功')// eventBus监听 广播一个消息
+          eventBus.$emit('updateUser')
         }).catch(() => {
           this.$message.error('保存用户信息失败')
         })
