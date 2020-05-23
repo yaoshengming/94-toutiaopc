@@ -45,13 +45,15 @@ export default {
       },
       // 定义表单验证规则
       loginRules: {
-        mobile: [{ required: true, message: '您的手机号不能为空', trigger: 'blur' }, {
+        mobile: [{ required: true, message: '您的手机号不能为空' }, {
           pattern: /^[1]([3-9])[0-9]{9}$/,
-          message: '您的手机号格式不正确'// 正则表达式
+          message: '您的手机号格式不正确', // 正则表达式
+          trigger: 'blur'
         }],
-        code: [{ required: true, message: '您的验证码不能为空', trigger: 'blur' }, {
+        code: [{ required: true, message: '您的验证码不能为空' }, {
           pattern: /^\d{6}$/,
-          message: '请输入6位数字的验证码'
+          message: '请输入6位数字的验证码',
+          trigger: 'blur'
         }],
         // 自定义校验 required不能校验true/false
         checked: [{

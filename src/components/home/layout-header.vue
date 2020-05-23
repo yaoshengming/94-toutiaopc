@@ -57,7 +57,7 @@ export default {
       if (command === 'info') {
         // 点击了个人信息
       } else if (command === 'git') {
-      // 如果点击了git苍鹭就跳转到git仓库
+      // 如果点击了git就跳转到git仓库
         window.location.href = 'https://github.com/yaoshengming/94-toutiaopc'
       } else {
         // 退出系统1.删除token 2.跳转登录页
